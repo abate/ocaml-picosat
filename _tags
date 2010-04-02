@@ -1,0 +1,3 @@
+<solver.native> or <solver.byte>: c_use_picosat
+<libpicosat_stubs.c>: g++
+<picosat>: not_hygienic
