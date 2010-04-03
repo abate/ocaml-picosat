@@ -13,11 +13,7 @@
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>
-#include <picosat.h>
-
-#define UNSATISFIABLE Val_int(PICOSAT_UNSATISFIABLE)
-#define SATISFIABLE Val_int(PICOSAT_SATISFIABLE)
-#define UNKNOWN Val_int(PICOSAT_UNKNOWN)
+#include <picosat/picosat.h>
 
 #define Val_none Val_int(0)
 
@@ -77,12 +73,18 @@ CAMLprim value caml_picosat_add(value lit) {
   CAMLreturn(Val_unit);
 }
 
+CAMLprim value caml_picosat_assume(value lit) {
+  CAMLparam1 (lit);
+  picosat_assume(Int_val(lit));
+  CAMLreturn(Val_unit);
+}
+
 CAMLprim value caml_picosat_deref(value lit) {
   CAMLparam1 (lit);
   CAMLreturn(Val_int(picosat_deref(Int_val(lit))));
 }
 
-CAMLprim value caml_picosat_unsedLit(value lit) {
+CAMLprim value caml_picosat_usedlit(value lit) {
   CAMLparam1 (lit);
   CAMLreturn(Val_int(picosat_usedlit(Int_val(lit))));
 }
@@ -95,6 +97,7 @@ CAMLprim value caml_picosat_corelit(value lit) {
 CAMLprim value caml_unsatcore(value unit) {
   CAMLparam0 ();
   CAMLlocal1( tl );
+  tl = Val_emptylist;
   int i, max_idx = picosat_variables ();
   for (i = 1; i <= max_idx; i++)
     /* discard all variables that are not in the unsat core */
@@ -107,6 +110,7 @@ CAMLprim value caml_unsatcore(value unit) {
 CAMLprim value caml_model(value unit) {
   CAMLparam0 ();
   CAMLlocal1( tl );
+  tl = Val_emptylist;
   int i, max_idx = picosat_variables ();
   for (i = 1; i <= max_idx; i++)
     /* discard all variables that are unknown */
@@ -126,7 +130,6 @@ CAMLprim value caml_picosat_sat(value limit) {
   }
   CAMLreturn(res);
 }
-
 
 /*
 void picosat_set_output (FILE *);

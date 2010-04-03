@@ -47,7 +47,7 @@ let _ = dispatch begin function
 
        (* When one link an OCaml library/binary/package, one should use -linkpkg *)
        flag ["ocaml"; "link"] & A"-linkpkg";
-       flag ["c"; "compile"; "g++"] (S[A"-I"; A"../../picosat"; A"-cc"; A"g++"; A"-ccopt"; A"-fPIC"]);
+       flag ["c"; "compile"; "gcc"] (S[A"-cc"; A"gcc"; A"-ccopt"; A"-fPIC"]);
        flag ["cc"; "compile"; "g++"] (S[A"-cc"; A"g++"; A"-ccopt"; A"-fPIC"]);
        (* flag ["ocamlmklib"] (S[A"-lminisat"; A"-oc"; A"minisat_stubs" ]); *)
 
@@ -71,10 +71,10 @@ let _ = dispatch begin function
 
        List.iter begin fun (lib,dir) ->
          flag ["ocaml"; "link"; "c_use_"^lib; "byte"]
-         (S[A"-custom"; A"-I"; A"../../picosat"; A"-ccopt"; A("-L"^lib); A"-cclib"; A("-l"^lib)]);
+         (S[A"-custom"; A"-ccopt"; A("-L"^lib); A"-cclib"; A("-l"^lib)]);
 
          flag ["ocaml"; "link"; "c_use_"^lib; "native"]
-         (S[A"-cclib"; A"-lstdc++"; A"-ccopt"; A("-L"^lib); A"-cclib"; A("-l"^lib)]);
+         (S[A"-ccopt"; A("-L"^lib); A"-cclib"; A("-l"^lib)]);
 
          flag [ "byte"; "library"; "link" ]
          (S[A"-dllib"; A("-l"^lib); A"-cclib"; A("-l"^lib^"stubs")]);
