@@ -1,3 +1,22 @@
 ocaml bingings for picosat
+==========================
+
+The package provides an example, solver.ml, that reads from standard input a
+formula and print its satisfiability and a satisfying assignment (if any). A
+formula is a sequence of lines that either define a variable ('v' <name>),
+define a clause ('c' followed by a sequence of names, with a leading '-' if
+they are negated in the clause) and comments (starting with '#'). A couple of
+example formulas are available in the 'examples/' directory.
+
+for documentation refer to picosat.h and picosat.mli
+
+Install and use
+===============
+
+To compile ocaml-picosat you need the picosat solver (compiled as a dynamic
+library) installed on the system. 
+
+The library assumes :
+/usr/include/picosat/picosat.h and /usr/lib/libpicosat.so.1.0.0
 
 Sun Apr 04 2010 Pietro Abate <pietro.abate@pps.jussieu.fr>

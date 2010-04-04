@@ -9,8 +9,8 @@ type solution = SAT | UNSAT | UNKNOWN
 
 external __init: unit -> unit = "caml_picosat_init"
 external reset: unit -> unit = "caml_picosat_reset"
-external adjust : int -> unit = "caml_picosat_adjust"
 
+external adjust : int -> unit = "caml_picosat_adjust"
 external set_seed: int -> unit = "caml_picosat_set_seed"
 external enable_trace: unit -> unit = "caml_picosat_enable_trace"
 
@@ -32,11 +32,14 @@ let varcount = ref 0
 (* never returns 0 that means end of clause *)
 let new_var () = incr varcount ; !varcount ;;
 
-let init ?(trace=false) ?nvars () =
-  begin match nvars with
-  |None -> __init ()
-  |Some n -> __init () ; adjust n end;
-  if trace then enable_trace ()
+let is_some = function None -> false | _ -> true
+let get = function None -> assert false | Some v -> v
+let init ?seed ?nvars ?(trace=true) () =
+  __init ();
+  if trace then enable_trace ();
+  if is_some nvars then adjust (get nvars);
+  if is_some seed then set_seed (get seed)
+;;
 
 let of_lit = function
   |Neg i when i <> 0 -> -i

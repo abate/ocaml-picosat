@@ -87,7 +87,6 @@ let process_file file =
 
 let solve file =
   Picosat.init ();
-  Picosat.enable_trace ();
   let vars = process_file file in
   let revs =
     let acc = Hashtbl.create (Hashtbl.length vars) in
