@@ -49,6 +49,12 @@ CAMLprim value caml_picosat_init(value unit) {
   CAMLreturn(Val_unit);
 }
 
+CAMLprim value caml_picosat_adjust(value n) {
+  CAMLparam1 (n);
+  picosat_adjust(Int_val(n));
+  CAMLreturn(Val_unit);
+}
+
 CAMLprim value caml_picosat_reset(value unit) {
   CAMLparam0 ();
   picosat_reset();

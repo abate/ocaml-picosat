@@ -7,8 +7,9 @@ type solution = SAT | UNSAT | UNKNOWN
 (* in picosat there are only literals that can be positive
  * or negative, whether gt or lt zero *)
 
-external init: unit -> unit = "caml_picosat_init"
+external __init: unit -> unit = "caml_picosat_init"
 external reset: unit -> unit = "caml_picosat_reset"
+external adjust : int -> unit = "caml_picosat_adjust"
 
 external set_seed: int -> unit = "caml_picosat_set_seed"
 external enable_trace: unit -> unit = "caml_picosat_enable_trace"
@@ -30,6 +31,12 @@ external unsatcore : unit -> int list = "caml_unsatcore"
 let varcount = ref 0
 (* never returns 0 that means end of clause *)
 let new_var () = incr varcount ; !varcount ;;
+
+let init ?(trace=false) ?nvars () =
+  begin match nvars with
+  |None -> __init ()
+  |Some n -> __init () ; adjust n end;
+  if trace then enable_trace ()
 
 let of_lit = function
   |Neg i when i <> 0 -> -i

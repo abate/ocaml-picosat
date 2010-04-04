@@ -89,22 +89,27 @@ let solve file =
   Picosat.init ();
   Picosat.enable_trace ();
   let vars = process_file file in
+  let revs =
+    let acc = Hashtbl.create (Hashtbl.length vars) in
+    Hashtbl.iter (fun name v -> Hashtbl.add acc v name) vars ;
+    acc
+  in
   match Picosat.solve () with
   | Picosat.UNKNOWN -> printf "Limit exausted\n"
   | Picosat.UNSAT ->
       begin
-        printf "unsat\n";
-        List.iter (fun i -> printf "%d\n" i) (Picosat.unsatcore ())
+        printf "unsat\nunsat core : %s\n"
+        (String.concat "," (List.map (fun i -> (Hashtbl.find revs i)) (Picosat.unsatcore ())))
       end
   | Picosat.SAT   ->
-      printf "sat\n";
-      Hashtbl.iter
-        (fun name v ->
+      begin
+        printf "sat\nmodel : \n";
+        List.iter (fun i ->
           printf "  %s=%s\n"
-            name
-            (Picosat.string_of_value (Picosat.value_of v))
-        )
-        vars
+          (Hashtbl.find revs i)
+          (Picosat.string_of_value (Picosat.value_of i))
+        ) (Picosat.model ())
+      end
 ;;
 
 let main () =
